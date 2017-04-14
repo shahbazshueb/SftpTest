@@ -1,0 +1,3 @@
+first_name,customer_id,signalvine_id,timezone,phone_valid,group_list,counselor,language,responded_to_opt_in,last_name,opt_in,created_at,related_id,phone,program_phone,active
+Aaron,,20f8f7db-9d4c-4181-b3e8-1a412b53a936,US/Eastern,true,New Participants,,English,false,Butler,false,2016-01-14 00:11:32,00000000-0000-0000-0000-000000000000,15550517118,15551222115,true
+Aaron,,21c2d688-3374-427c-b382-7b7b1b587801,US/Eastern,true,New Participants,,English,false,Aguilar,false,2016-01-14 00:11:32,00000000-0000-0000-0000-000000000000,15550872816,15551222115,true

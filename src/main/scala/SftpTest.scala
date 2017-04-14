@@ -21,28 +21,32 @@ object SftpTest extends App {
   override def main(args: Array[String]): Unit = {
     val jsch = new JSch
     val privateKey =
-      """
-        |MIIBuwIBAAKBgQCN82wqHg8NoDpZxCUWjMajrBPxgPRjgB68LTUIJMet9gC5gggm
-        |bbXVmGU1lljijlHVCFM7xCI1f+NvWJUX0wQYKvRavCAy7T4kDQdf6OWkjQeeWVQi
-        |t2v2NdIs2TzkkeYtGgxC0VtyAoMRt9C+L78HIJ3zi0Gk+ROePLrnXuSGMwIVAOhQ
-        |gztcFlRzTJbKuCRyCpHPbEQHAoGATL73weqvjaNASGjr/BcXQHP4DzFxByxDH5VH
-        |j8IFSp53R/aqf9344R0mE25EymfhYrqeO3mQdyDRlW8hwtOhtsY73ZMIWm66M+tD
-        |IBibbl8G8w2AtoiQdOd2qv0ZsScuAmEplfWYORDVlaks6qjzIs0PW7HiBe1as+Ct
-        |wxmDLhYCgYBk7BUEp4U7MDolfmps3J/VNAj2YkwbV/9eFWIguFabXlV+79/XU6tT
-        |IwX3NCryvnrAuKWygkz0ocC7f2yZTu7rOFSN38XFsD41gflFDQrHLWWa/xBlbkMK
-        |JqPeNWiUmS23Lbk1NDhxaKPd5quad+WAP6I1Phecs2FtkcRerxN8wgIVAKAQFl99
-        |BWfVJrYO919USyX15Kwh
-      """.stripMargin.getBytes
-    val emptyPassPhrase = new Array[Byte](0)
+      """-----BEGIN RSA PRIVATE KEY-----
+        |MIICXAIBAAKBgQDRqrZ7eDX1fn9G2IKG/YMPDsEtfAKL6VZvb9eEtYqzZ6nVpDkI
+        |t5qNy1j3aKV2HH+TWbOLAxKw+4XM8niT2DFPZ3Wwle14qyL8S0JKgm3GsotAR9kk
+        |RBNAVBsjkScZoAP5PiZmPWF4YKi8kyxzjwH/5nO0ILARuZEthgKUD/ALOwIDAQAB
+        |AoGANcW6l1/1NskCi4DruQM7oZj/IlMzs/5cFKhyda65q9liTVCY8AtmsAb/AjTs
+        |eqZEcd4Hlhdrq8hWQIHPOtuviV8BAjFYN8nEY7p9P9zk6wOH6n9mBAp31d6gf908
+        |fFdx038fs41LhkkWvQfSZieDhGJTHFpo27Kh+8R7aCNFjwECQQDod3+3INkl42T5
+        |7on3nBEx7UKXPsTaRSorjy7yoFaTi79WLZZMMxcptOOptCN5OjE5STJ8HlYWWJt4
+        |FrpVaTxxAkEA5uRXVom2Ro44aojXarNe3M99o63wCbsSxSUEnZtzqqeUbH4SZPMb
+        |keVBHOXiRaQL/4rJFTK4qPur6MVGzTRIawJBAOOTSOZgM/TRfiLnEQ3kLTkxSkWC
+        |X3hGyZfHHnDL4rWi03dsPXzvbzeXLGEQRsIA4/tu2wuDL0fFCr4vkc7XrSECQGnc
+        |h67FtSzkSDmQRDRHyVa0S4agWU4c155MOrGIdJ/p9cNIimZ+kEV0N0ZooDYN4PJp
+        |T4jImKHhwhAXYz7ymcECQDvfrtotqjnzSUFRh8vXarusbFXkpPn5Z7MqDgyQ5spP
+        |okoj98L6xM9nYaafSwchBi3glcDL69dcdn2Q+c6dfXU=
+        |-----END RSA PRIVATE KEY-----""".stripMargin.getBytes
+    val emptyPassPhrase = "tenpearls".getBytes
     Try {
       jsch.addIdentity("tenpearls", privateKey, null, emptyPassPhrase)
       val session = jsch.getSession("tenpearls", "172.16.0.68", 22)
+      session.setPassword("tenpearls")
       session.setConfig("StrictHostKeyChecking", "no")
       session.connect()
       val channel = session.openChannel("sftp");
       channel.connect
       val channelSftp = channel.asInstanceOf[ChannelSftp]
-      channelSftp.cd("/home/shahbaz/sharefiles")
+      //channelSftp.cd("/home/shahbaz/sharefiles")
       val bis = new BufferedInputStream(channelSftp.get("download.csv"))
       val newFile = new File("testDownload.csv")
       val os: OutputStream = new FileOutputStream(newFile)
@@ -67,7 +71,7 @@ object SftpTest extends App {
       case Success(file) =>
         val reader = CSVReader.open(file)
         val list = reader.allWithHeaders();
-        list.head += ("first_name" -> "shahbaz")
+        //list.head += ("first_name" -> "shahbaz")
         println(list.head("first_name"))
     }
 
