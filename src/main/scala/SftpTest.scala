@@ -20,22 +20,23 @@ import util.control.Breaks._
 object SftpTest extends App {
   override def main(args: Array[String]): Unit = {
     val jsch = new JSch
+    val privateKey =
+      """
+        |MIIBuwIBAAKBgQCN82wqHg8NoDpZxCUWjMajrBPxgPRjgB68LTUIJMet9gC5gggm
+        |bbXVmGU1lljijlHVCFM7xCI1f+NvWJUX0wQYKvRavCAy7T4kDQdf6OWkjQeeWVQi
+        |t2v2NdIs2TzkkeYtGgxC0VtyAoMRt9C+L78HIJ3zi0Gk+ROePLrnXuSGMwIVAOhQ
+        |gztcFlRzTJbKuCRyCpHPbEQHAoGATL73weqvjaNASGjr/BcXQHP4DzFxByxDH5VH
+        |j8IFSp53R/aqf9344R0mE25EymfhYrqeO3mQdyDRlW8hwtOhtsY73ZMIWm66M+tD
+        |IBibbl8G8w2AtoiQdOd2qv0ZsScuAmEplfWYORDVlaks6qjzIs0PW7HiBe1as+Ct
+        |wxmDLhYCgYBk7BUEp4U7MDolfmps3J/VNAj2YkwbV/9eFWIguFabXlV+79/XU6tT
+        |IwX3NCryvnrAuKWygkz0ocC7f2yZTu7rOFSN38XFsD41gflFDQrHLWWa/xBlbkMK
+        |JqPeNWiUmS23Lbk1NDhxaKPd5quad+WAP6I1Phecs2FtkcRerxN8wgIVAKAQFl99
+        |BWfVJrYO919USyX15Kwh
+      """.stripMargin.getBytes
+    val emptyPassPhrase = new Array[Byte](0)
     Try {
-      jsch.addIdentity(
-        """
-          |MIIBuwIBAAKBgQCN82wqHg8NoDpZxCUWjMajrBPxgPRjgB68LTUIJMet9gC5gggm
-          |bbXVmGU1lljijlHVCFM7xCI1f+NvWJUX0wQYKvRavCAy7T4kDQdf6OWkjQeeWVQi
-          |t2v2NdIs2TzkkeYtGgxC0VtyAoMRt9C+L78HIJ3zi0Gk+ROePLrnXuSGMwIVAOhQ
-          |gztcFlRzTJbKuCRyCpHPbEQHAoGATL73weqvjaNASGjr/BcXQHP4DzFxByxDH5VH
-          |j8IFSp53R/aqf9344R0mE25EymfhYrqeO3mQdyDRlW8hwtOhtsY73ZMIWm66M+tD
-          |IBibbl8G8w2AtoiQdOd2qv0ZsScuAmEplfWYORDVlaks6qjzIs0PW7HiBe1as+Ct
-          |wxmDLhYCgYBk7BUEp4U7MDolfmps3J/VNAj2YkwbV/9eFWIguFabXlV+79/XU6tT
-          |IwX3NCryvnrAuKWygkz0ocC7f2yZTu7rOFSN38XFsD41gflFDQrHLWWa/xBlbkMK
-          |JqPeNWiUmS23Lbk1NDhxaKPd5quad+WAP6I1Phecs2FtkcRerxN8wgIVAKAQFl99
-          |BWfVJrYO919USyX15Kwh
-        """.stripMargin)
+      jsch.addIdentity("tenpearls", privateKey, null, emptyPassPhrase)
       val session = jsch.getSession("tenpearls", "172.16.0.68", 22)
-      session.setPassword("tenpearls")
       session.setConfig("StrictHostKeyChecking", "no")
       session.connect()
       val channel = session.openChannel("sftp");
@@ -48,8 +49,8 @@ object SftpTest extends App {
       val bos = new BufferedOutputStream(os)
       val buffer = new Array[Byte](1024)
       var readCount: Int = 0;
-      breakable{
-        while(true) {
+      breakable {
+        while (true) {
           readCount = bis.read(buffer)
           println(readCount)
           if (readCount < 0)
@@ -71,6 +72,7 @@ object SftpTest extends App {
     }
 
   }
+
   def getSftpChannel(): Unit = {
 
   }
